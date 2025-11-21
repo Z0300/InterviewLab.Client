@@ -8,9 +8,4 @@ const api = axios.create({
   },
 });
 
-export const getProblems = async () => await api.get("/problems");
-export const getProblem = async (id) => await api.get(`/problems/${id}`);
-export const deleteProblem = async (id) => await api.delete(`/problems/${id}`);
-export const updateProblem = async (id, payload) =>
-  await api.put(`/problems/${id}`, payload);
-export const createProblem = (payload) => api.post("/problems", payload);
+export default api;
