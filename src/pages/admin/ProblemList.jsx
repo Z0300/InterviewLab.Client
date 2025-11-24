@@ -3,7 +3,7 @@ import Spinner from "../../components/Spinner.jsx";
 import useProblems from "../../hooks/useProblems.js";
 
 const ProblemList = () => {
-  const { data: problems, error, isLoading } = useProblems();
+  const { data: problems, error, isPending } = useProblems();
 
   const onDelete = async (id) => {
     if (!confirm("Delete this problem?")) return;
@@ -16,14 +16,16 @@ const ProblemList = () => {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Problems</h1>
         <Link
-          to="/new-problem"
+          to="/admin/problems/new-problem"
           className="px-3 py-1 bg-indigo-600 text-white rounded"
         >
           New
         </Link>
       </div>
 
-      {isLoading ? (
+      {error && <p className="text-red-500">{error}</p>}
+
+      {isPending ? (
         <Spinner />
       ) : (
         <div className="overflow-x-auto rounded-xl bg-slate-800/40 border border-slate-700/40 shadow-lg">
@@ -70,12 +72,12 @@ const ProblemList = () => {
                           {p.difficulty}
                         </span>
                         <div className="flex flex-wrap gap-2">
-                          {p.tagsJson?.split(",").map((tag, i) => (
+                          {(p.tagsJson || []).map((tag, i) => (
                             <span
                               key={i}
                               className="px-2 py-0.5 text-xs rounded-xl bg-slate-700 text-slate-200"
                             >
-                              {tag.trim()}
+                              {tag}
                             </span>
                           ))}
                         </div>

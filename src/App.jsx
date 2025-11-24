@@ -3,6 +3,7 @@ import { Link, Route, Routes, useLocation } from "react-router";
 import ProblemList from "./pages/admin/ProblemList.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import React from "react";
+import NewProblem from "./pages/admin/NewProblem.jsx";
 
 const App = () => {
   const location = useLocation();
@@ -58,6 +59,7 @@ const App = () => {
             <Route path="problems">
               <Route path="list" element={<ProblemList />} />
               <Route index element={<ProblemList />} />
+              <Route path="new-problem" element={<NewProblem />} />
             </Route>
           </Route>
 

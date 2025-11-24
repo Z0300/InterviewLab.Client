@@ -1,3 +1,52 @@
 @import "tailwindcss";
+@import "@pathofdev/react-tag-input/build/index.css";
 @custom-variant dark (&:where(.dark &));
+
+/* Dark mode for react-tag-input */
+/* Main container */
+.react-tag-input {
+    background-color: rgba(255, 255, 255, 0.05) !important; /* bg-white/5 */
+    color: #fff !important;
+    border-radius: 0.275rem !important; /* rounded-md */
+    padding: 0.375rem 0.75rem !important; /* py-1.5 px-3 */
+    outline: 1px solid rgba(255, 255, 255, 0.1) !important; /* outline-white/10 */
+}
+
+/* Focus ring */
+.react-tag-input:focus-within {
+    outline: 2px solid #6366f1 !important; /* indigo-500 */
+    outline-offset: -2px !important;
+}
+
+/* Input inside */
+.react-tag-input input {
+    background: transparent !important;
+    border: none !important;
+    color: #fff !important; /* text-white */
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Tag chips */
+.react-tag-input__tag {
+    background-color: rgba(255, 255, 255, 0.1) !important; /* slightly lighter chip */
+    color: #fff !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+}
+
+/* X remove icon */
+.react-tag-input__tag__remove {
+    color: #bbb !important;
+    margin-left: 4px !important;
+}
+
+.react-tag-input__tag__remove:hover {
+    color: #fff !important; /* bright white on hover */
+}
+
+/* Tag list wrapper */
+.react-tag-input__tags {
+    background: transparent !important;
+}
 
