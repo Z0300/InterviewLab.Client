@@ -3,7 +3,8 @@ import { Link, Route, Routes, useLocation } from "react-router";
 import ProblemList from "./pages/admin/ProblemList.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import React from "react";
-import NewProblem from "./pages/admin/NewProblem.jsx";
+import CreateProblem from "./pages/admin/CreateProblem.jsx";
+import EditProblem from "./pages/admin/EditProblem.jsx";
 
 const App = () => {
   const location = useLocation();
@@ -31,10 +32,7 @@ const App = () => {
             {isAdmin && (
               <nav className="hidden md:flex gap-4 text-sm text-slate-300">
                 <Link to="/admin/problems/list" className="hover:text-white">
-                  Manage Problems
-                </Link>
-                <Link to="/admin/problems/new" className="hover:text-white">
-                  Add Problem
+                  Problems & Questions
                 </Link>
               </nav>
             )}
@@ -59,7 +57,10 @@ const App = () => {
             <Route path="problems">
               <Route path="list" element={<ProblemList />} />
               <Route index element={<ProblemList />} />
-              <Route path="new-problem" element={<NewProblem />} />
+
+              <Route path="create" element={<CreateProblem />} />
+
+              <Route path=":id/edit" element={<EditProblem />} />
             </Route>
           </Route>
 

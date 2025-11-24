@@ -1,5 +1,5 @@
 import { Link } from "react-router"; // IMPORTANT
-import Spinner from "../../components/Spinner.jsx";
+import Spinner from "../../components/ui/Spinner.jsx";
 import useProblems from "../../hooks/useProblems.js";
 
 const ProblemList = () => {
@@ -16,7 +16,7 @@ const ProblemList = () => {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Problems</h1>
         <Link
-          to="/admin/problems/new-problem"
+          to="/admin/problems/create"
           className="px-3 py-1 bg-indigo-600 text-white rounded"
         >
           New
@@ -34,6 +34,7 @@ const ProblemList = () => {
               <tr className="text-left text-slate-400 text-sm">
                 <th className="px-4 py-3 w-12">#</th>
                 <th className="px-4 py-3">Title</th>
+                <th className="px-4 py-3">Company</th>
                 <th className="px-4 py-3 w-36 text-right">Actions</th>
               </tr>
             </thead>
@@ -51,7 +52,6 @@ const ProblemList = () => {
                     <td className="px-4 py-4 text-sm text-slate-400 text-right">
                       {idx + 1}.
                     </td>
-
                     <td className="px-4 py-4 align-top min-w-0">
                       <Link
                         to={`/problems/${p.id}`}
@@ -83,11 +83,13 @@ const ProblemList = () => {
                         </div>
                       </div>
                     </td>
-
+                    <td className="px-4 py-4 align-top min-w-0 text-left">
+                      {p.company}
+                    </td>
                     <td className="px-4 py-4 text-right">
                       <div className="inline-flex items-center gap-4">
                         <Link
-                          to={`/problems/${p.id}/edit`}
+                          to={`/admin/problems/${p.id}/edit`}
                           className="text-sm text-indigo-300 hover:underline"
                         >
                           Edit
