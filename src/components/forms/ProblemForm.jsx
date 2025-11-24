@@ -2,9 +2,13 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useCreateProblem from "../hooks/useCreateProblems.js";
+import useCreateProblem from "../../hooks/useCreateProblems.js";
 import ReactTagInput from "@pathofdev/react-tag-input";
 import MDEditor from "@uiw/react-md-editor";
+import toast from "react-hot-toast";
+import Spinner from "../ui/Spinner.jsx";
+import { useNavigate } from "react-router";
+import useUpdateProblem from "../../hooks/useUpdateProblem.js";
 
 const ProblemSchema = z.object({
   title: z
@@ -16,57 +20,54 @@ const ProblemSchema = z.object({
     .min(3, "Company must be at least 3 characters")
     .max(100, "Company must be at least 3 characters"),
   difficulty: z.enum(["Easy", "Medium", "Hard"], "Select difficulty"),
-  tags: z.array(z.string()).nonempty().or(z.array(z.string())),
+  tags: z.array(z.string()).min(1, "Please add at least one tag"),
   description: z.string().min(10, "Description too short"),
 });
 
-export default function ProblemForm({ titleHeading }) {
-  const mutation = useCreateProblem();
+const ProblemForm = ({ problem, action }) => {
+  const navigate = useNavigate();
+  const titleHeading = action === "Update" ? "Update Problem" : "Add Problem";
+
+  const { mutateAsync: createProblem, isPending: isCreating } =
+    useCreateProblem();
+
+  const { mutateAsync: updateProblem, isPending: isUpdating } =
+    useUpdateProblem();
 
   const {
     register,
     handleSubmit,
-    setError,
-    reset,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(ProblemSchema),
     defaultValues: {
-      title: "",
-      company: "",
-      difficulty: "Easy",
-      tags: [],
-      description: "",
+      title: problem ? problem.title : "",
+      company: problem ? problem.company : "",
+      difficulty: problem ? problem.difficulty : "Easy",
+      tags: problem ? problem.tagsJson : [],
+      description: problem ? problem.description : "",
     },
   });
 
-  async function onSubmit(data) {
-    const payload = {
-      title: data.title,
-      company: data.company,
-      difficulty: data.difficulty,
-      tagsJson: data.tags,
-      description: data.description,
-    };
+  const onSubmit = async (data) => {
     try {
-      await mutation.mutateAsync(payload);
-      reset();
-    } catch (error) {
-      const errRes = error.response?.data;
-      const errors = errRes.errors;
-      if (errors && typeof errors !== "object") {
-        Object.entries(errors).forEach(([key, value]) => {
-          setError(key, { type: "server", message: String(value) });
+      if (problem && action === "Update") {
+        await updateProblem({
+          id: problem.id,
+          payload: { ...data, tagsJson: data.tags },
         });
       } else {
-        console.log(error);
+        await createProblem({ ...data, tagsJson: data.tags });
       }
+    } catch {
+      toast.error(`${action} problem failed. Please try again.`);
     }
-  }
+    navigate("/admin/problems");
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="problemForm">
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-12">
         <div className="border-b border-white/10 pb-12">
           <h2 className="text-base/7 font-semibold text-white">
@@ -89,7 +90,9 @@ export default function ProblemForm({ titleHeading }) {
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                 />
                 {errors.title && (
-                  <p style={{ color: "red" }}>{errors.title.message}</p>
+                  <p className="text-rose-400 text-sm">
+                    {errors.title.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -108,7 +111,9 @@ export default function ProblemForm({ titleHeading }) {
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                 />
                 {errors.company && (
-                  <p style={{ color: "red" }}>{errors.company.message}</p>
+                  <p className="text-rose-400 text-sm">
+                    {errors.company.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -132,7 +137,9 @@ export default function ProblemForm({ titleHeading }) {
                   <option value="Hard">Hard</option>
                 </select>
                 {errors.difficulty && (
-                  <p style={{ color: "red" }}>{errors.difficulty.message}</p>
+                  <p className="text-rose-400 text-sm">
+                    {errors.difficulty.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -154,8 +161,8 @@ export default function ProblemForm({ titleHeading }) {
                   />
                 )}
               />
-              {errors.tagsJson && (
-                <p style={{ color: "red" }}>{errors.tagsJson.message}</p>
+              {errors.tags && (
+                <p className="text-rose-400 text-sm">{errors.tags.message}</p>
               )}
             </div>
             <div className="col-span-full">
@@ -179,7 +186,9 @@ export default function ProblemForm({ titleHeading }) {
                   )}
                 />
                 {errors.description && (
-                  <p style={{ color: "red" }}>{errors.description.message}</p>
+                  <p className="text-rose-400 text-sm">
+                    {errors.description.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -190,18 +199,21 @@ export default function ProblemForm({ titleHeading }) {
         <button
           type="button"
           className="text-sm/6 font-semibold text-white"
-          onClick={() => reset()}
+          onClick={() => navigate(-1)}
         >
           Cancel
         </button>
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isCreating || isUpdating}
           className="rounded-md cursor-pointer bg-indigo-500 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
         >
-          {isSubmitting ? "Saving..." : "Save"}
+          {(isCreating || isUpdating) && <Spinner />}
+          {action} Problem
         </button>
       </div>
     </form>
   );
-}
+};
+
+export default ProblemForm;
