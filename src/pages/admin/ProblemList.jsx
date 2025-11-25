@@ -67,7 +67,7 @@ const ProblemList = () => {
                     </td>
                     <td className="px-4 py-4 align-top min-w-0">
                       <Link
-                        to={`/problems/${p.id}`}
+                        to={`/admin/problems/${p.id}`}
                         className="text-slate-100 font-medium hover:text-indigo-300 block truncate"
                       >
                         {p.title || "Untitled Problem"}
