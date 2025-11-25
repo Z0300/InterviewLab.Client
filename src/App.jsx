@@ -5,6 +5,7 @@ import AdminLayout from "./layouts/AdminLayout.jsx";
 import React from "react";
 import CreateProblem from "./pages/admin/CreateProblem.jsx";
 import EditProblem from "./pages/admin/EditProblem.jsx";
+import GetProblem from "./pages/admin/GetProblem.jsx";
 
 const App = () => {
   const location = useLocation();
@@ -57,6 +58,8 @@ const App = () => {
             <Route path="problems">
               <Route path="list" element={<ProblemList />} />
               <Route index element={<ProblemList />} />
+
+              <Route path=":id" element={<GetProblem />} />
 
               <Route path="create" element={<CreateProblem />} />
 
