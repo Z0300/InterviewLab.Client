@@ -1,14 +1,27 @@
 import { Link } from "react-router"; // IMPORTANT
 import Spinner from "../../components/ui/Spinner.jsx";
 import useProblems from "../../hooks/useProblems.js";
+import useDeleteProblem from "../../hooks/useDeleteProblem.js";
+import { useState } from "react";
+import ConfirmDialog from "../../components/ui/ConfirmDialog.jsx";
 
 const ProblemList = () => {
-  const { data: problems, error, isPending } = useProblems();
+  const [dialog, setDialog] = useState({
+    open: false,
+    id: null,
+  });
 
-  const onDelete = async (id) => {
-    if (!confirm("Delete this problem?")) return;
-    // await deleteProblem(id);
-    // await load();
+  const openDeleteDialog = (id) => {
+    setDialog({ open: true, id });
+  };
+
+  const { data: problems, error, isPending } = useProblems();
+  const { mutateAsync: deleteProblem, isPending: isDeletingProblem } =
+    useDeleteProblem();
+
+  const onDelete = async () => {
+    await deleteProblem(dialog.id);
+    setDialog({ open: false, id: null });
   };
 
   return (
@@ -17,7 +30,7 @@ const ProblemList = () => {
         <h1 className="text-2xl font-semibold">Problems</h1>
         <Link
           to="/admin/problems/create"
-          className="px-3 py-1 bg-indigo-600 text-white rounded"
+          className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 shadow-sm"
         >
           New
         </Link>
@@ -25,7 +38,7 @@ const ProblemList = () => {
 
       {error && <p className="text-red-500">{error}</p>}
 
-      {isPending ? (
+      {isPending || isDeletingProblem ? (
         <Spinner />
       ) : (
         <div className="overflow-x-auto rounded-xl bg-slate-800/40 border border-slate-700/40 shadow-lg">
@@ -75,7 +88,7 @@ const ProblemList = () => {
                           {(p.tagsJson || []).map((tag, i) => (
                             <span
                               key={i}
-                              className="px-2 py-0.5 text-xs rounded-xl bg-slate-700 text-slate-200"
+                              className="px-2 py-0.5 text-xs rounded-lg bg-slate-700 text-slate-200"
                             >
                               {tag}
                             </span>
@@ -86,19 +99,66 @@ const ProblemList = () => {
                     <td className="px-4 py-4 align-top min-w-0 text-left">
                       {p.company}
                     </td>
-                    <td className="px-4 py-4 text-right">
-                      <div className="inline-flex items-center gap-4">
+                    <td className="px-4 py-4">
+                      <div className="inline-flex items-center gap-3">
+                        {/* Add */}
+                        <Link
+                          to={`/admin/problems/${p.id}/solution`}
+                          title="Add Solution"
+                          className="p-2 rounded-full bg-green-500/10 text-green-300 hover:bg-green-500/20 transition"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          >
+                            <path
+                              d="M12 5v14M5 12h14"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Link>
+
+                        {/* Edit */}
                         <Link
                           to={`/admin/problems/${p.id}/edit`}
-                          className="text-sm text-indigo-300 hover:underline"
+                          title="Edit"
+                          className="p-2 rounded-full bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 transition"
                         >
-                          Edit
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          >
+                            <path
+                              d="M3 21l3-1 11-11 1-3-3 1L4 20z"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                         </Link>
+
+                        {/* Delete */}
                         <button
-                          onClick={() => onDelete(p.id)}
-                          className="text-sm text-rose-400 hover:underline"
+                          onClick={() => openDeleteDialog(p.id)}
+                          title="Delete"
+                          className="p-2 rounded-full bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition"
                         >
-                          Delete
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          >
+                            <path
+                              d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M10 6V4"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                         </button>
                       </div>
                     </td>
@@ -107,6 +167,13 @@ const ProblemList = () => {
               )}
             </tbody>
           </table>
+          <ConfirmDialog
+            open={dialog.open}
+            title="Delete Problem"
+            message="Are you sure you want to delete this problem? This action cannot be undone."
+            onCancel={() => setDialog({ open: false, id: null })}
+            onConfirm={onDelete}
+          />
         </div>
       )}
     </div>
