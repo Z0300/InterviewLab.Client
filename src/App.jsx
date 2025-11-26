@@ -6,6 +6,7 @@ import React from "react";
 import CreateProblem from "./pages/admin/CreateProblem.jsx";
 import EditProblem from "./pages/admin/EditProblem.jsx";
 import GetProblem from "./pages/admin/GetProblem.jsx";
+import AddSolution from "./pages/admin/AddSolution.jsx";
 
 const App = () => {
   const location = useLocation();
@@ -13,7 +14,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
-      <header className="fixed top-0 left-0 w-full z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+      <header className="w-full z-50 bg-slate-800/60 backdrop-blur border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link to="/" className="text-xl font-semibold tracking-tight">
@@ -51,7 +52,7 @@ const App = () => {
           </div>
         </div>
       </header>
-      <main className="max-w-6xl mx-auto px-6 pt-28 pb-8">
+      <main className="mx-auto px-6 py-16">
         <Routes>
           {/* ADMIN NESTED ROUTES */}
           <Route path="/admin" element={<AdminLayout />}>
@@ -64,6 +65,8 @@ const App = () => {
               <Route path="create" element={<CreateProblem />} />
 
               <Route path=":id/edit" element={<EditProblem />} />
+
+              <Route path=":problemId/solutions" element={<AddSolution />} />
             </Route>
           </Route>
 

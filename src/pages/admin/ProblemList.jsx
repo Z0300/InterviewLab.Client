@@ -25,7 +25,7 @@ const ProblemList = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-1xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Problems</h1>
         <Link
@@ -103,7 +103,7 @@ const ProblemList = () => {
                       <div className="inline-flex items-center gap-3">
                         {/* Add */}
                         <Link
-                          to={`/admin/problems/${p.id}/solution`}
+                          to={`/admin/problems/${p.id}/solutions`}
                           title="Add Solution"
                           className="p-2 rounded-full bg-green-500/10 text-green-300 hover:bg-green-500/20 transition"
                         >

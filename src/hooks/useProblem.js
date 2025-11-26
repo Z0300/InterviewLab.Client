@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../api.js";
 
-const useProblems = (id) => {
+const useProblems = (problemId) => {
   return useQuery({
-    queryKey: ["problems", id],
+    queryKey: ["problems", problemId],
     queryFn: async () =>
       await api
-        .get(`/problems/${id}`)
+        .get(`/problems/${problemId}`)
         .then((res) => res.data.data)
         .catch((err) => err.data.errors),
-    enabled: !!id,
+    enabled: !!problemId,
     staleTime: 10 * 1000,
   });
 };
