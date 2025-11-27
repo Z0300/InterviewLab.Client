@@ -1,7 +1,10 @@
 import React, { useMemo, useState } from "react";
+import { Link } from "react-router";
 
-const SolutionsAccordion = ({ solutions = [], allowMultipleOpen = false }) => {
+const SolutionsAccordion = ({ problem = [], allowMultipleOpen = false }) => {
   const [openKeys, setOpenKeys] = useState([]);
+  const { id: problemId, solutions } = problem;
+
   const grouped = useMemo(() => {
     return solutions.reduce((acc, solution) => {
       const language = solution.language || "Unknown";
@@ -82,9 +85,16 @@ const SolutionsAccordion = ({ solutions = [], allowMultipleOpen = false }) => {
                   >
                     <div className="flex items-center justify-between gap-3 mb-2">
                       <div className="text-xs text-slate-300 font-medium">
-                        {sol.meta || "Solution"}
+                        Implementation
                       </div>
                       <div className="flex items-center gap-2">
+                        <Link
+                          to={`/admin/problems/${problemId}/solutions/${sol.id}/edit`}
+                          title="Copy code"
+                          className="text-xs px-2 py-1 rounded bg-slate-800/60 hover:bg-slate-700/60 transition"
+                        >
+                          Edit
+                        </Link>
                         <button
                           onClick={() => copyToClipboard(sol.code)}
                           title="Copy code"

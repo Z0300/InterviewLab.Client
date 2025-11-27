@@ -7,6 +7,7 @@ import CreateProblem from "./pages/admin/CreateProblem.jsx";
 import EditProblem from "./pages/admin/EditProblem.jsx";
 import GetProblem from "./pages/admin/GetProblem.jsx";
 import AddSolution from "./pages/admin/AddSolution.jsx";
+import EditSolution from "./pages/admin/EditSolution.jsx";
 
 const App = () => {
   const location = useLocation();
@@ -67,6 +68,11 @@ const App = () => {
               <Route path=":id/edit" element={<EditProblem />} />
 
               <Route path=":problemId/solutions" element={<AddSolution />} />
+
+              <Route
+                path=":problemId/solutions/:id/edit"
+                element={<EditSolution />}
+              />
             </Route>
           </Route>
 

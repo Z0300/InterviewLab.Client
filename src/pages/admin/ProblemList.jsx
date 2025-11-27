@@ -1,11 +1,18 @@
-import { Link } from "react-router"; // IMPORTANT
+import { Link } from "react-router";
 import Spinner from "../../components/ui/Spinner.jsx";
 import useProblems from "../../hooks/useProblems.js";
 import useDeleteProblem from "../../hooks/useDeleteProblem.js";
 import { useState } from "react";
 import ConfirmDialog from "../../components/ui/ConfirmDialog.jsx";
+import useDebounce from "../../hooks/useDebounce.js";
 
 const ProblemList = () => {
+  const [search, setSearch] = useState("");
+  const debounceSearch = useDebounce(search, 300);
+
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+
   const [dialog, setDialog] = useState({
     open: false,
     id: null,
@@ -15,7 +22,17 @@ const ProblemList = () => {
     setDialog({ open: true, id });
   };
 
-  const { data: problems, error, isPending } = useProblems();
+  const { data, isPending, isFetching, isPlaceholderData } = useProblems(
+    debounceSearch,
+    page,
+    pageSize,
+  );
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setPage(1);
+  };
+
   const { mutateAsync: deleteProblem, isPending: isDeletingProblem } =
     useDeleteProblem();
 
@@ -24,19 +41,63 @@ const ProblemList = () => {
     setDialog({ open: false, id: null });
   };
 
+  const payload = data ?? {}; // fallback so we don't crash
+  const items = payload.items ?? [];
+
+  const totalCount =
+    typeof payload.totalCount === "number" ? payload.totalCount : undefined;
+
+  const totalPages =
+    typeof payload.totalPages === "number" ? payload.totalPages : undefined;
+
+  const hasMore =
+    typeof totalPages === "number"
+      ? page < totalPages
+      : typeof totalCount === "number"
+        ? page * pageSize < totalCount
+        : items.length === pageSize;
+
   return (
-    <div className="max-w-1xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">Problems</h1>
+        <div className="flex gap-3 items-center  pr-4">
+          <div className="flex-1">
+            <input
+              type="search"
+              value={search}
+              onChange={handleSearchChange}
+              placeholder="Search Title"
+              className="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-900/60 text-slate-100 placeholder-slate-500 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition"
+            />
+          </div>
+
+          <div className="flex items-center gap-3 w-auto">
+            {isFetching && (
+              <span className="text-sm text-slate-300 italic">Searching…</span>
+            )}
+          </div>
+        </div>
+
         <Link
           to="/admin/problems/create"
-          className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 shadow-sm"
+          className="ml-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-md ring-1 ring-indigo-600/30 transition"
         >
+          <svg
+            className="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path
+              d="M12 5v14M5 12h14"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
           New
         </Link>
       </div>
-
-      {error && <p className="text-red-500">{error}</p>}
 
       {isPending || isDeletingProblem ? (
         <Spinner />
@@ -53,18 +114,22 @@ const ProblemList = () => {
             </thead>
 
             <tbody className="divide-y divide-slate-800">
-              {problems.length === 0 ? (
+              {items.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-6 text-slate-400">
                     No problems yet
                   </td>
                 </tr>
               ) : (
-                problems.map((p, idx) => (
-                  <tr key={p.id} className="bg-slate-800/60 transition">
+                items.map((p, idx) => (
+                  <tr
+                    key={p.id}
+                    className="bg-slate-800/60 transition hover:bg-slate-700/40"
+                  >
                     <td className="px-4 py-4 text-sm text-slate-400 text-right">
                       {idx + 1}.
                     </td>
+
                     <td className="px-4 py-4 align-top min-w-0">
                       <Link
                         to={`/admin/problems/${p.id}`}
@@ -72,7 +137,8 @@ const ProblemList = () => {
                       >
                         {p.title || "Untitled Problem"}
                       </Link>
-                      <div className="mt-1 text-xs text-slate-400 flex items-center gap-2">
+
+                      <div className="mt-2 text-xs text-slate-400 flex items-center gap-3">
                         <span
                           className={
                             p.difficulty === "Easy"
@@ -84,6 +150,7 @@ const ProblemList = () => {
                         >
                           {p.difficulty}
                         </span>
+
                         <div className="flex flex-wrap gap-2">
                           {(p.tagsJson || []).map((tag, i) => (
                             <span
@@ -96,9 +163,11 @@ const ProblemList = () => {
                         </div>
                       </div>
                     </td>
+
                     <td className="px-4 py-4 align-top min-w-0 text-left">
-                      {p.company}
+                      <div className="text-sm text-slate-200">{p.company}</div>
                     </td>
+
                     <td className="px-4 py-4">
                       <div className="inline-flex items-center gap-3">
                         {/* Add */}
@@ -167,6 +236,42 @@ const ProblemList = () => {
               )}
             </tbody>
           </table>
+
+          {/* Small footer: show totals if available */}
+          <div className="flex items-center justify-between px-4 py-3 border-t border-slate-700/30 bg-slate-900/30">
+            <div className="text-sm text-slate-400">
+              {typeof totalCount === "number"
+                ? `${totalCount} problems`
+                : `${items.length} shown`}
+            </div>
+
+            {(typeof totalPages === "number"
+              ? totalPages > 1
+              : items.length > pageSize) && (
+              <div className="flex items-center gap-3">
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage((s) => Math.max(1, s - 1))}
+                  className="px-3 py-1 rounded border border-slate-700 bg-slate-800 text-slate-200 disabled:opacity-50"
+                >
+                  Prev
+                </button>
+
+                <div className="text-sm text-slate-200 px-2">Page {page}</div>
+
+                <button
+                  onClick={() => {
+                    if (!isPlaceholderData && hasMore) setPage((s) => s + 1);
+                  }}
+                  disabled={isPlaceholderData || !hasMore}
+                  className="px-3 py-1 rounded border border-slate-700 bg-slate-800 text-slate-200 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
+
           <ConfirmDialog
             open={dialog.open}
             title="Delete Problem"

@@ -8,9 +8,15 @@ const useUpdateSolution = () => {
     mutationFn: async ({ id, payload }) =>
       await api.put(`/solutions/${id}`, payload).then((r) => r.data.data),
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({
-        queryKey: ["problems", data.data.problemId],
-      });
+      const { id: solutionId, problemId } = data;
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["problems", problemId, "solutions"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["problems", problemId, "solutions", solutionId],
+        }),
+      ]);
     },
     onError: (err) => {
       console.error("Update solution failed", err);
