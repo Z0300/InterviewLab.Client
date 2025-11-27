@@ -14,7 +14,7 @@ const GetProblem = () => {
       {isPending ? (
         <Spinner />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
           <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
             <h1 className="text-2xl font-semibold text-white mb-4">
               {data.title}
@@ -77,10 +77,7 @@ const GetProblem = () => {
                 Add Solution
               </Link>
             </div>
-            <SolutionsAccordion
-              solutions={data.solutions}
-              allowMultipleOpen={false}
-            />
+            <SolutionsAccordion problem={data} allowMultipleOpen={false} />
           </div>
         </div>
       )}

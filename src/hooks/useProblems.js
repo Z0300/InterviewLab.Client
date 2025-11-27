@@ -1,15 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "../api.js";
 
-const useProblems = () => {
+const fetchProblems = async ({ queryKey }) => {
+  const [, search, page, pageSize] = queryKey;
+  const res = await api.get("problems", {
+    params: { search: search, page: page, pageSize: pageSize || 10 },
+  });
+
+  return res.data.data;
+};
+
+const useProblems = (search = "", page = 1, pageSize = 20) => {
   return useQuery({
-    queryKey: ["problems"],
-    queryFn: async () =>
-      await api
-        .get("/problems")
-        .then((res) => res.data.data)
-        .catch((err) => err.data.errors),
-    staleTime: 10 * 1000,
+    queryKey: ["problems", search, page, pageSize],
+    queryFn: fetchProblems,
+    staleTime: 30 * 1000,
+    placeholderData: keepPreviousData,
   });
 };
 

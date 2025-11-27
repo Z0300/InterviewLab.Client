@@ -6,9 +6,9 @@ import ProblemForm from "../../components/forms/ProblemForm.jsx";
 
 const EditProblem = () => {
   const { id } = useParams();
-  const { data: problem, isLoading } = useProblem(id);
+  const { data: problem, isPending } = useProblem(id);
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="flex-center w-full h-full">
         <Spinner />
@@ -16,10 +16,6 @@ const EditProblem = () => {
     );
   }
 
-  return (
-    <div>
-      <ProblemForm action="Update" problem={problem} />
-    </div>
-  );
+  return <ProblemForm action="Update" problem={problem} />;
 };
 export default EditProblem;

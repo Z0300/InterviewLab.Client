@@ -14,6 +14,7 @@ const SolutionSchema = z.object({
   code: z.string().nonempty("Provide a code"),
   explanation: z.string().min(10, "Explanation is too short"),
   qualityScore: z.coerce.number().int().optional(), // accepts "5" and converts
+  isCanonical: z.boolean(),
   source: z.string().optional(),
 });
 
@@ -35,7 +36,7 @@ const SolutionForm = ({ problemId, solution, action }) => {
     resolver: zodResolver(SolutionSchema),
     defaultValues: {
       language: solution ? solution.language : "",
-      problemId: solution ? solution.problemId : "",
+      problemId: solution ? problemId : "",
       code: solution ? solution.code : "",
       explanation: solution ? solution.explanation : "",
       qualityScore: solution ? solution.qualityScore : 1,
@@ -45,9 +46,14 @@ const SolutionForm = ({ problemId, solution, action }) => {
   });
 
   const onSubmit = async (data) => {
+    console.log(data);
+
     try {
       if (solution && action === "Update") {
-        await updateSolution({ id: solution.id, payload: { ...data } });
+        await updateSolution({
+          id: solution.id,
+          payload: { ...data, problemId: problemId },
+        });
       } else {
         await addSolution({ ...data, problemId: problemId });
       }
@@ -210,9 +216,9 @@ const SolutionForm = ({ problemId, solution, action }) => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     <path d="M5 13l4 4L19 7" />
                   </svg>
