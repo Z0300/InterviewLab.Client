@@ -7,7 +7,7 @@ import ReactTagInput from "@pathofdev/react-tag-input";
 import MDEditor from "@uiw/react-md-editor";
 import toast from "react-hot-toast";
 import Spinner from "../ui/Spinner.jsx";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import useUpdateProblem from "../../hooks/useUpdateProblem.js";
 
 const ProblemSchema = z.object({
@@ -88,6 +88,7 @@ const ProblemForm = ({ problem, action }) => {
                   </label>
                   <div className="mt-2">
                     <input
+                      id="title"
                       name="title"
                       {...register("title")}
                       placeholder="Title"
@@ -109,6 +110,7 @@ const ProblemForm = ({ problem, action }) => {
                   </label>
                   <div className="mt-2">
                     <input
+                      id="company"
                       name="company"
                       {...register("company")}
                       placeholder="Company"
@@ -130,6 +132,7 @@ const ProblemForm = ({ problem, action }) => {
                   </label>
                   <div className="mt-2">
                     <select
+                      id="difficulty"
                       name="difficulty"
                       {...register("difficulty")}
                       className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"

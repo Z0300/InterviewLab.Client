@@ -1,6 +1,6 @@
 import React from "react";
 import { z } from "zod";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import useAddSolution from "../../hooks/useAddSolution.js";
 import useUpdateSolution from "../../hooks/useUpdateSolution.js";
 import { Controller, useForm } from "react-hook-form";
@@ -46,8 +46,6 @@ const SolutionForm = ({ problemId, solution, action }) => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-
     try {
       if (solution && action === "Update") {
         await updateSolution({
@@ -84,6 +82,7 @@ const SolutionForm = ({ problemId, solution, action }) => {
                 </label>
                 <div className="mt-2">
                   <input
+                    id="language"
                     name="language"
                     {...register("language")}
                     placeholder="Language"
@@ -153,13 +152,14 @@ const SolutionForm = ({ problemId, solution, action }) => {
 
               <div className="sm:col-span-3">
                 <label
-                  htmlFor="title"
+                  htmlFor="qualityScore"
                   className="block text-sm/6 font-medium text-white"
                 >
                   Quality Score
                 </label>
                 <div className="mt-2">
                   <input
+                    id="qualityScore"
                     name="qualityScore"
                     {...register("qualityScore", { valueAsNumber: true })}
                     placeholder="Quality Score"
@@ -181,6 +181,7 @@ const SolutionForm = ({ problemId, solution, action }) => {
                 </label>
                 <div className="mt-2">
                   <input
+                    id="source"
                     name="source"
                     {...register("source")}
                     placeholder="Source"

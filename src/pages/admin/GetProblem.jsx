@@ -1,6 +1,6 @@
 import React from "react";
 import useProblem from "../../hooks/useProblem.js";
-import { Link, useParams } from "react-router";
+import { Link, useParams } from "react-router-dom";
 import Spinner from "../../components/ui/Spinner.jsx";
 import { Interweave } from "interweave";
 import SolutionsAccordion from "../../components/ui/SolutionsAccordion.jsx";
