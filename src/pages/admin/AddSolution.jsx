@@ -1,6 +1,6 @@
 import React from "react";
 import SolutionForm from "../../components/forms/SolutionForm.jsx";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 const AddSolution = () => {
   const { problemId } = useParams();

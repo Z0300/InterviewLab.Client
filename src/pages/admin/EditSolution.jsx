@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import useSolution from "../../hooks/useSolution.js";
 import Spinner from "../../components/ui/Spinner.jsx";
 import SolutionForm from "../../components/forms/SolutionForm.jsx";

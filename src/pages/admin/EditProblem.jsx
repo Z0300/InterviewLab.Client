@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import useProblem from "../../hooks/useProblem.js";
 import Spinner from "../../components/ui/Spinner.jsx";
 import ProblemForm from "../../components/forms/ProblemForm.jsx";

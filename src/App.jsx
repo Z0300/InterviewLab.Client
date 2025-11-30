@@ -1,5 +1,12 @@
+// App.jsx
 import "./App.css";
-import { Link, Route, Routes, useLocation } from "react-router";
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import ProblemList from "./pages/admin/ProblemList.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import React from "react";
@@ -8,10 +15,27 @@ import EditProblem from "./pages/admin/EditProblem.jsx";
 import GetProblem from "./pages/admin/GetProblem.jsx";
 import AddSolution from "./pages/admin/AddSolution.jsx";
 import EditSolution from "./pages/admin/EditSolution.jsx";
+import Login from "./pages/Login.jsx";
+import RequireAuth from "./auth/RequireAuth.jsx";
+
+import { useAuth } from "./context/AuthContext.jsx";
 
 const App = () => {
   const location = useLocation();
-  const isAdmin = location.pathname.startsWith("/admin");
+  const navigate = useNavigate();
+  const { isAuthenticated, logout, user } = useAuth();
+  const isAdminPath = location.pathname.startsWith("/admin");
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      await logout();
+    } catch (err) {
+      console.warn("Logout error", err);
+    } finally {
+      navigate("/", { replace: true });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
@@ -21,7 +45,8 @@ const App = () => {
             <Link to="/" className="text-xl font-semibold tracking-tight">
               iTL
             </Link>
-            {!isAdmin && (
+
+            {!isAdminPath && (
               <nav className="hidden md:flex gap-4 text-sm text-slate-300">
                 <Link to="/" className="hover:text-white">
                   Coding Exams
@@ -32,7 +57,8 @@ const App = () => {
               </nav>
             )}
 
-            {isAdmin && (
+            {/* Admin nav - only visible when on admin path AND authenticated */}
+            {isAdminPath && isAuthenticated && (
               <nav className="hidden md:flex gap-4 text-sm text-slate-300">
                 <Link to="/admin/problems/list" className="hover:text-white">
                   Problems & Questions
@@ -42,12 +68,35 @@ const App = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            {isAdmin && (
+            {isAuthenticated ? (
+              <>
+                {user?.name && (
+                  <span className="hidden sm:inline text-sm text-slate-300">
+                    Hello,{" "}
+                    <span className="font-medium text-white">{user.name}</span>
+                  </span>
+                )}
+
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center px-3 py-1.5 bg-[#ffa1161f] text-[#ffa116] text-sm rounded-md shadow-sm hover:bg-[#ffa11633]"
+                >
+                  Logout
+                </button>
+              </>
+            ) : isAdminPath ? (
               <Link
-                to="/logout"
-                className="inline-flex items-center px-3 py-1.5 bg-[#ffa1161f] text-[#ffa116] text-sm rounded-md shadow-sm hover:bg-[#ffa11633]"
+                to="/admin/login"
+                className="inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-md shadow-sm hover:bg-indigo-700"
               >
-                Logout
+                Login
+              </Link>
+            ) : (
+              <Link
+                to="/admin/login"
+                className="hidden md:inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-md shadow-sm hover:bg-indigo-700"
+              >
+                Admin
               </Link>
             )}
           </div>
@@ -55,28 +104,26 @@ const App = () => {
       </header>
       <main className="mx-auto px-6 py-16">
         <Routes>
-          {/* ADMIN NESTED ROUTES */}
+          <Route path="/admin/login" element={<Login />} />
+
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="problems">
               <Route path="list" element={<ProblemList />} />
               <Route index element={<ProblemList />} />
-
               <Route path=":id" element={<GetProblem />} />
 
-              <Route path="create" element={<CreateProblem />} />
-
-              <Route path=":id/edit" element={<EditProblem />} />
-
-              <Route path=":problemId/solutions" element={<AddSolution />} />
-
-              <Route
-                path=":problemId/solutions/:id/edit"
-                element={<EditSolution />}
-              />
+              <Route element={<RequireAuth />}>
+                <Route path="create" element={<CreateProblem />} />
+                <Route path=":id/edit" element={<EditProblem />} />
+                <Route path=":problemId/solutions" element={<AddSolution />} />
+                <Route
+                  path=":problemId/solutions/:id/edit"
+                  element={<EditSolution />}
+                />
+              </Route>
             </Route>
           </Route>
 
-          {/* PUBLIC ROUTES */}
           <Route path="/" element={<ProblemList />} />
         </Routes>
       </main>

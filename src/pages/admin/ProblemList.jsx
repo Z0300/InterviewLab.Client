@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import Spinner from "../../components/ui/Spinner.jsx";
 import useProblems from "../../hooks/useProblems.js";
 import useDeleteProblem from "../../hooks/useDeleteProblem.js";
