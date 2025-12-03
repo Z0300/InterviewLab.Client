@@ -1,9 +1,9 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import api from "../api.js";
+import axios from "../api/axios.js";
 
 const fetchProblems = async ({ queryKey }) => {
   const [, search, page, pageSize] = queryKey;
-  const res = await api.get("problems", {
+  const res = await axios.get("problems", {
     params: { search: search, page: page, pageSize: pageSize || 10 },
   });
 

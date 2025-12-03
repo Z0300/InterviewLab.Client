@@ -1,12 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../api.js";
+import useAxiosPrivate from "./useAxiosPrivate.js";
 
 const useDeleteProblem = () => {
   const queryClient = useQueryClient();
+  const axiosPrivate = useAxiosPrivate();
 
   return useMutation({
-    mutationFn: async (id) =>
-      await api.delete(`/problems/${id}`).then((r) => r.data.data),
+    mutationFn: async (id) => {
+      await axiosPrivate.delete(`/problems/${id}`);
+      return id;
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["problems"] });
     },

@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
-import AuthContext, { AuthProvider } from "./context/AuthContext.jsx";
+import AuthContext, { AuthProvider } from "./context/AuthProvider.jsx";
 
 const queryClient = new QueryClient();
 
