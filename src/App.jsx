@@ -1,4 +1,3 @@
-// App.jsx
 import "./App.css";
 import {
   Link,
@@ -18,18 +17,24 @@ import EditSolution from "./pages/admin/EditSolution.jsx";
 import Login from "./pages/Login.jsx";
 import RequireAuth from "./auth/RequireAuth.jsx";
 
-import { useAuth } from "./context/AuthContext.jsx";
+import useAuth from "./hooks/useAuth.js";
+import useRevokeToken from "./hooks/useRevokeToken.js";
+import useCurrentUser from "./hooks/useCurrentUser.js";
 
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout, user } = useAuth();
+  const { auth } = useAuth();
+  useCurrentUser();
   const isAdminPath = location.pathname.startsWith("/admin");
+  const { mutateAsync: revokeTokens } = useRevokeToken();
+  const isAuthenticated = Boolean(auth?.accessToken);
+  const displayName = auth?.user?.name || auth?.user?.username || "";
 
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      await logout();
+      await revokeTokens();
     } catch (err) {
       console.warn("Logout error", err);
     } finally {
@@ -57,7 +62,6 @@ const App = () => {
               </nav>
             )}
 
-            {/* Admin nav - only visible when on admin path AND authenticated */}
             {isAdminPath && isAuthenticated && (
               <nav className="hidden md:flex gap-4 text-sm text-slate-300">
                 <Link to="/admin/problems/list" className="hover:text-white">
@@ -70,10 +74,12 @@ const App = () => {
           <div className="flex items-center gap-4">
             {isAuthenticated ? (
               <>
-                {user?.name && (
+                {displayName && (
                   <span className="hidden sm:inline text-sm text-slate-300">
                     Hello,{" "}
-                    <span className="font-medium text-white">{user.name}</span>
+                    <span className="font-medium text-white">
+                      {displayName}
+                    </span>
                   </span>
                 )}
 

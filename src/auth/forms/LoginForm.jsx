@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import useUserLogin from "../../hooks/useUserLogin.js";
+import useLogin from "../../hooks/useLogin.js";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +14,7 @@ const LoginSchema = z.object({
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const { mutateAsync, isPending, error } = useUserLogin();
+  const { mutateAsync, isPending } = useLogin();
 
   const {
     register,
@@ -27,10 +27,14 @@ const LoginForm = () => {
   const onSubmit = async (data) => {
     try {
       await mutateAsync(data);
-    } catch {
-      toast.error("Login failed. Please try again.");
+      navigate("/admin/problems");
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Login failed. Please try again.";
+      toast.error(message);
     }
-    navigate("/admin/problems");
   };
 
   return (

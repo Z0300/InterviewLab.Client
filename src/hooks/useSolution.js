@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import api from "../api.js";
+import useAxiosPrivate from "./useAxiosPrivate.js";
 
 const useSolution = (id) => {
+  const axiosPrivate = useAxiosPrivate();
+
   return useQuery({
     queryKey: ["solutions", id],
-    queryFn: async () =>
-      await api
-        .get(`/solutions/${id}`)
-        .then((res) => res.data.data)
-        .catch((err) => err.data.errors),
+    queryFn: async () => {
+      const res = await axiosPrivate.get(`/solutions/${id}`);
+      return res.data.data;
+    },
     enabled: !!id,
     staleTime: 10 * 1000,
   });

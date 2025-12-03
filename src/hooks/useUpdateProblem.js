@@ -1,12 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../api.js";
+import useAxiosPrivate from "./useAxiosPrivate.js";
 
 const useUpdateProblem = () => {
   const queryClient = useQueryClient();
+  const axiosPrivate = useAxiosPrivate();
 
   return useMutation({
-    mutationFn: async ({ id, payload }) =>
-      await api.put(`/problems/${id}`, payload).then((r) => r.data.data),
+    mutationFn: async ({ id, payload }) => {
+      const response = await axiosPrivate.put(`/problems/${id}`, payload);
+      return response.data?.data;
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["problems"] });
     },

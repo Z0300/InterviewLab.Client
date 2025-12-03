@@ -1,16 +1,25 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext.jsx";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import useAuth from "../hooks/useAuth.js";
+import Spinner from "../components/ui/Spinner.jsx";
 
 const RequireAuth = () => {
-  const { isAuthenticated } = useAuth();
+  const { auth, isAuthReady } = useAuth();
   const location = useLocation();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/admin/login" state={{ from: location }} replace />;
+  if (!isAuthReady) {
+    return (
+      <div className="flex justify-center py-12">
+        <Spinner />
+      </div>
+    );
   }
 
-  return <Outlet />;
+  return auth?.accessToken ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/admin/login" state={{ from: location }} replace />
+  );
 };
 
 export default RequireAuth;
