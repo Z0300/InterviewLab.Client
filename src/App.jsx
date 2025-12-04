@@ -42,40 +42,49 @@ const App = () => {
     }
   };
 
+  const isLoginPage = location.pathname === "/admin/login";
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
-      <header className="w-full z-50 bg-slate-800/60 backdrop-blur border-b border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link to="/" className="text-xl font-semibold tracking-tight">
+    <div className="min-h-screen bg-black text-neutral-100">
+      {!isLoginPage && (
+        <header className="w-full z-50 bg-neutral-950/80 backdrop-blur border-b border-neutral-900">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+            <Link to="/" className="text-lg sm:text-xl font-semibold tracking-tight whitespace-nowrap">
               iTL
             </Link>
 
             {!isAdminPath && (
-              <nav className="hidden md:flex gap-4 text-sm text-slate-300">
-                <Link to="/" className="hover:text-white">
+              <nav className="hidden md:flex gap-4 text-sm text-neutral-400">
+                <Link to="/" className="hover:text-white transition-colors">
                   Coding Exams
                 </Link>
-                <Link to="/interview-questions" className="hover:text-white">
+                <Link
+                  to="/interview-questions"
+                  className="hover:text-white transition-colors"
+                >
                   Interview Questions
                 </Link>
               </nav>
             )}
 
             {isAdminPath && isAuthenticated && (
-              <nav className="hidden md:flex gap-4 text-sm text-slate-300">
-                <Link to="/admin/problems/list" className="hover:text-white">
+              <nav className="hidden md:flex gap-4 text-sm text-neutral-400">
+                <Link
+                  to="/admin/problems/list"
+                  className="hover:text-white transition-colors"
+                >
                   Problems & Questions
                 </Link>
               </nav>
             )}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             {isAuthenticated ? (
               <>
                 {displayName && (
-                  <span className="hidden sm:inline text-sm text-slate-300">
+                  <span className="hidden lg:inline text-xs sm:text-sm text-neutral-400 truncate max-w-[120px] sm:max-w-none">
                     Hello,{" "}
                     <span className="font-medium text-white">
                       {displayName}
@@ -85,22 +94,23 @@ const App = () => {
 
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center px-3 py-1.5 bg-[#ffa1161f] text-[#ffa116] text-sm rounded-md shadow-sm hover:bg-[#ffa11633]"
+                  className="inline-flex items-center px-2.5 sm:px-3 py-1.5 bg-neutral-900 text-neutral-300 text-xs sm:text-sm rounded-md border border-neutral-800 hover:bg-neutral-800 hover:text-white transition-colors touch-manipulation"
                 >
-                  Logout
+                  <span className="hidden sm:inline">Logout</span>
+                  <span className="sm:hidden">Out</span>
                 </button>
               </>
             ) : isAdminPath ? (
               <Link
                 to="/admin/login"
-                className="inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-md shadow-sm hover:bg-indigo-700"
+                className="inline-flex items-center px-2.5 sm:px-3 py-1.5 bg-white text-black text-xs sm:text-sm rounded-md hover:bg-neutral-200 transition-colors touch-manipulation"
               >
                 Login
               </Link>
             ) : (
               <Link
                 to="/admin/login"
-                className="hidden md:inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-md shadow-sm hover:bg-indigo-700"
+                className="hidden md:inline-flex items-center px-2.5 sm:px-3 py-1.5 bg-white text-black text-xs sm:text-sm rounded-md hover:bg-neutral-200 transition-colors touch-manipulation"
               >
                 Admin
               </Link>
@@ -108,7 +118,8 @@ const App = () => {
           </div>
         </div>
       </header>
-      <main className="mx-auto px-6 py-16">
+      )}
+      <main className={isLoginPage ? "" : "mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-16"}>
         <Routes>
           <Route path="/admin/login" element={<Login />} />
 
