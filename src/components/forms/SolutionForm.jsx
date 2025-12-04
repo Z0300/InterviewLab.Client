@@ -63,7 +63,7 @@ const SolutionForm = ({ problemId, solution, action }) => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="bg-slate-800/60 border border-slate-700/60 rounded-xl p-8 shadow-lg">
+      <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4 sm:p-6 lg:p-8">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="border-b border-white/10 pb-12">
             <h2 className="text-base/7 font-semibold text-white">
@@ -86,7 +86,7 @@ const SolutionForm = ({ problemId, solution, action }) => {
                     name="language"
                     {...register("language")}
                     placeholder="Language"
-                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                    className="block w-full rounded-md bg-neutral-900 border border-neutral-800 px-3 py-1.5 text-base text-white placeholder:text-neutral-500 focus:border-neutral-600 focus:outline-none sm:text-sm/6"
                   />
                   {errors.language && (
                     <p className="text-rose-400 text-sm">
@@ -163,7 +163,7 @@ const SolutionForm = ({ problemId, solution, action }) => {
                     name="qualityScore"
                     {...register("qualityScore", { valueAsNumber: true })}
                     placeholder="Quality Score"
-                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                    className="block w-full rounded-md bg-neutral-900 border border-neutral-800 px-3 py-1.5 text-base text-white placeholder:text-neutral-500 focus:border-neutral-600 focus:outline-none sm:text-sm/6"
                   />
                 </div>
                 {errors.qualityScore && (
@@ -185,7 +185,7 @@ const SolutionForm = ({ problemId, solution, action }) => {
                     name="source"
                     {...register("source")}
                     placeholder="Source"
-                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                    className="block w-full rounded-md bg-neutral-900 border border-neutral-800 px-3 py-1.5 text-base text-white placeholder:text-neutral-500 focus:border-neutral-600 focus:outline-none sm:text-sm/6"
                   />
                   {errors.source && (
                     <p className="text-rose-400 text-sm">
@@ -201,10 +201,10 @@ const SolutionForm = ({ problemId, solution, action }) => {
                     {...register("isCanonical")}
                     className="
       peer h-5 w-5 appearance-none
-      border border-gray-500 rounded
+      border border-neutral-600 rounded
       bg-transparent
-      checked:bg-indigo-600
-      checked:border-indigo-600
+      checked:bg-white
+      checked:border-white
       focus:outline-none
       transition"
                   />
@@ -224,24 +224,24 @@ const SolutionForm = ({ problemId, solution, action }) => {
                     <path d="M5 13l4 4L19 7" />
                   </svg>
 
-                  <span className="text-gray-200 peer-checked:text-indigo-400">
+                  <span className="text-neutral-300 peer-checked:text-white">
                     Is Canonical?
                   </span>
                 </label>
               </div>
             </div>
           </div>
-          <div className="mt-6 flex items-center justify-end gap-x-6">
+          <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-x-6">
             <button
               type="button"
-              className="text-sm/6 font-semibold text-white"
+              className="text-sm font-semibold text-white px-4 py-2.5 sm:px-3 sm:py-2 rounded-md border border-neutral-800 hover:bg-neutral-900 transition-colors touch-manipulation"
               onClick={() => navigate(-1)}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-md cursor-pointer bg-indigo-500 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              className="rounded-md cursor-pointer bg-white text-black px-4 py-2.5 sm:px-3 sm:py-2 text-sm font-semibold hover:bg-neutral-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400 transition-colors disabled:opacity-50 touch-manipulation"
             >
               {(isCreating || isUpdating) && <Spinner />}
               {action} Solution

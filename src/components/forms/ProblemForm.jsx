@@ -68,7 +68,7 @@ const ProblemForm = ({ problem, action }) => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="bg-slate-800/60 border border-slate-700/60 rounded-xl p-8 shadow-lg">
+      <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4 sm:p-6 lg:p-8">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-12">
             <div className="border-b border-white/10 pb-12">
@@ -92,7 +92,7 @@ const ProblemForm = ({ problem, action }) => {
                       name="title"
                       {...register("title")}
                       placeholder="Title"
-                      className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                      className="block w-full rounded-md bg-neutral-900 border border-neutral-800 px-3 py-1.5 text-base text-white placeholder:text-neutral-500 focus:border-neutral-600 focus:outline-none sm:text-sm/6"
                     />
                     {errors.title && (
                       <p className="text-rose-400 text-sm">
@@ -114,7 +114,7 @@ const ProblemForm = ({ problem, action }) => {
                       name="company"
                       {...register("company")}
                       placeholder="Company"
-                      className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                      className="block w-full rounded-md bg-neutral-900 border border-neutral-800 px-3 py-1.5 text-base text-white placeholder:text-neutral-500 focus:border-neutral-600 focus:outline-none sm:text-sm/6"
                     />
                     {errors.company && (
                       <p className="text-rose-400 text-sm">
@@ -135,7 +135,7 @@ const ProblemForm = ({ problem, action }) => {
                       id="difficulty"
                       name="difficulty"
                       {...register("difficulty")}
-                      className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                      className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-neutral-900 border border-neutral-800 py-1.5 pr-8 pl-3 text-base text-white *:bg-neutral-900 focus:border-neutral-600 focus:outline-none sm:text-sm/6"
                     >
                       <option value="Easy" defaultValue="Easy">
                         Easy
@@ -204,10 +204,10 @@ const ProblemForm = ({ problem, action }) => {
               </div>
             </div>
           </div>
-          <div className="mt-6 flex items-center justify-end gap-x-6">
+          <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-x-6">
             <button
               type="button"
-              className="text-sm/6 font-semibold text-white"
+              className="text-sm font-semibold text-white px-4 py-2.5 sm:px-3 sm:py-2 rounded-md border border-neutral-800 hover:bg-neutral-900 transition-colors touch-manipulation"
               onClick={() => navigate(-1)}
             >
               Cancel
@@ -215,7 +215,7 @@ const ProblemForm = ({ problem, action }) => {
             <button
               type="submit"
               disabled={isCreating || isUpdating}
-              className="rounded-md cursor-pointer bg-indigo-500 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              className="rounded-md cursor-pointer bg-white text-black px-4 py-2.5 sm:px-3 sm:py-2 text-sm font-semibold hover:bg-neutral-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400 transition-colors disabled:opacity-50 touch-manipulation"
             >
               {(isCreating || isUpdating) && <Spinner />}
               {action} Problem
